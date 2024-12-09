@@ -2,8 +2,7 @@
     .name = "rpi-pico-self-test",
     .version = "0.0.0",
     .dependencies = .{
-        .@"microzig/build" = .{ .path = "microzig/build" },
-        .@"microzig/bsp/raspberrypi/rp2xxx" = .{ .path = "microzig/port/raspberrypi/rp2xxx" },
+        .microzig = .{ .path = "microzig" },
         .rtt = .{
             .url = "git+https://github.com/haydenridd/zig-rtt#595a42f4b80a77ffa87619f2a61ddc1b8ff53df1",
             .hash = "12205fd51be74c1f7c77283fb5e7c70fb2f631cfed0aa8d71bd9f65abe4900491099",

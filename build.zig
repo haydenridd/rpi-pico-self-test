@@ -1,13 +1,18 @@
 const std = @import("std");
-const MicroZig = @import("microzig/build");
-const rp2xxx = @import("microzig/bsp/raspberrypi/rp2xxx");
+const microzig = @import("microzig");
+
+const MicroBuild = microzig.MicroBuild(.{
+    .rp2xxx = true,
+});
 
 pub fn build(b: *std.Build) void {
-    const mz = MicroZig.init(b, .{});
+    const mz_dep = b.dependency("microzig", .{});
+    const mb = MicroBuild.init(b, mz_dep) orelse return;
+
     const optimize = b.standardOptimizeOption(.{});
-    const firmware = mz.add_firmware(b, .{
+    const firmware = mb.add_firmware(.{
         .name = "selftest",
-        .target = rp2xxx.boards.raspberrypi.pico,
+        .target = mb.ports.rp2xxx.boards.raspberrypi.pico,
         .optimize = optimize,
         .root_source_file = b.path("src/main.zig"),
     });
@@ -19,8 +24,8 @@ pub fn build(b: *std.Build) void {
     // and allows installing the firmware as a typical firmware file.
     //
     // This will also install into `$prefix/firmware` instead of `$prefix/bin`.
-    mz.install_firmware(b, firmware, .{});
+    mb.install_firmware(firmware, .{});
 
     // For debugging, we also always install the firmware as an ELF file
-    mz.install_firmware(b, firmware, .{ .format = .elf });
+    mb.install_firmware(firmware, .{ .format = .elf });
 }
